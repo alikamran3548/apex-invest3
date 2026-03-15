@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.local
+.agents
+.replit
+replit.nix
+.breakpoints
+.cache
+.replit-artifact
+*.log
+.vercel

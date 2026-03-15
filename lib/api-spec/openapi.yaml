@@ -1,0 +1,975 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: APEX INVESTOR API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: entries
+    description: Entry operations for all sections
+  - name: sections
+    description: Section management
+  - name: portfolio
+    description: Paper trading portfolio
+  - name: watchlist
+    description: Stock watchlist
+  - name: search
+    description: Global search
+  - name: tags
+    description: Tag management
+  - name: dashboard
+    description: Dashboard data
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get dashboard summary
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardData"
+
+  /search:
+    get:
+      operationId: globalSearch
+      tags: [search]
+      summary: Search across all sections
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: sectionSlug
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResult"
+
+  /tags:
+    get:
+      operationId: getTags
+      tags: [tags]
+      summary: Get all tags
+      responses:
+        "200":
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+    post:
+      operationId: createTag
+      tags: [tags]
+      summary: Create a tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTag"
+      responses:
+        "201":
+          description: Created tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+
+  /tags/{id}:
+    delete:
+      operationId: deleteTag
+      tags: [tags]
+      summary: Delete a tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /sections:
+    get:
+      operationId: getSections
+      tags: [sections]
+      summary: Get all sections
+      responses:
+        "200":
+          description: List of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+
+  /entries:
+    get:
+      operationId: getEntries
+      tags: [entries]
+      summary: Get entries for a section
+      parameters:
+        - name: sectionSlug
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: starred
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+    post:
+      operationId: createEntry
+      tags: [entries]
+      summary: Create an entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEntry"
+      responses:
+        "201":
+          description: Created entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /entries/recent:
+    get:
+      operationId: getRecentEntries
+      tags: [entries]
+      summary: Get recent entries across all sections
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recent entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+
+  /entries/starred:
+    get:
+      operationId: getStarredEntries
+      tags: [entries]
+      summary: Get starred/pinned entries
+      responses:
+        "200":
+          description: Starred entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+
+  /entries/{id}:
+    get:
+      operationId: getEntry
+      tags: [entries]
+      summary: Get a single entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "404":
+          description: Not found
+    put:
+      operationId: updateEntry
+      tags: [entries]
+      summary: Update an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEntry"
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+    delete:
+      operationId: deleteEntry
+      tags: [entries]
+      summary: Delete an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /entries/{id}/star:
+    patch:
+      operationId: toggleStar
+      tags: [entries]
+      summary: Toggle star on entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /entries/{id}/archive:
+    patch:
+      operationId: toggleArchive
+      tags: [entries]
+      summary: Toggle archive on entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /portfolio:
+    get:
+      operationId: getPortfolio
+      tags: [portfolio]
+      summary: Get portfolio entries
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [holding, sold, watching]
+      responses:
+        "200":
+          description: Portfolio items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioItem"
+    post:
+      operationId: createPortfolioItem
+      tags: [portfolio]
+      summary: Create portfolio item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePortfolioItem"
+      responses:
+        "201":
+          description: Created item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+
+  /portfolio/summary:
+    get:
+      operationId: getPortfolioSummary
+      tags: [portfolio]
+      summary: Get portfolio summary stats
+      responses:
+        "200":
+          description: Portfolio summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioSummary"
+
+  /portfolio/{id}:
+    put:
+      operationId: updatePortfolioItem
+      tags: [portfolio]
+      summary: Update portfolio item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePortfolioItem"
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioItem"
+    delete:
+      operationId: deletePortfolioItem
+      tags: [portfolio]
+      summary: Delete portfolio item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /watchlist:
+    get:
+      operationId: getWatchlist
+      tags: [watchlist]
+      summary: Get watchlist
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sector
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Watchlist items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WatchlistItem"
+    post:
+      operationId: createWatchlistItem
+      tags: [watchlist]
+      summary: Add to watchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWatchlistItem"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistItem"
+
+  /watchlist/{id}:
+    put:
+      operationId: updateWatchlistItem
+      tags: [watchlist]
+      summary: Update watchlist item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWatchlistItem"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistItem"
+    delete:
+      operationId: deleteWatchlistItem
+      tags: [watchlist]
+      summary: Delete watchlist item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    DashboardData:
+      type: object
+      properties:
+        sectionCounts:
+          type: array
+          items:
+            type: object
+            properties:
+              slug:
+                type: string
+              name:
+                type: string
+              count:
+                type: integer
+            required: [slug, name, count]
+        recentEntries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Entry"
+        starredEntries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Entry"
+        totalEntries:
+          type: integer
+        portfolioSummary:
+          $ref: "#/components/schemas/PortfolioSummary"
+      required:
+        - sectionCounts
+        - recentEntries
+        - starredEntries
+        - totalEntries
+
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        sectionSlug:
+          type: string
+        sectionName:
+          type: string
+        title:
+          type: string
+        excerpt:
+          type: string
+        type:
+          type: string
+          enum: [entry, portfolio, watchlist]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - sectionSlug
+        - sectionName
+        - title
+        - type
+        - createdAt
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+      required: [id, name, color]
+
+    CreateTag:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+      required: [name]
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        sortOrder:
+          type: integer
+        entryCount:
+          type: integer
+      required: [id, name, slug, category, icon, sortOrder]
+
+    Entry:
+      type: object
+      properties:
+        id:
+          type: integer
+        sectionId:
+          type: integer
+        sectionSlug:
+          type: string
+        sectionName:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        starred:
+          type: boolean
+        archived:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - sectionId
+        - title
+        - tags
+        - starred
+        - archived
+        - createdAt
+        - updatedAt
+
+    CreateEntry:
+      type: object
+      properties:
+        sectionSlug:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        starred:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+      required: [sectionSlug, title]
+
+    UpdateEntry:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        starred:
+          type: boolean
+        archived:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+    PortfolioItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        companyName:
+          type: string
+        entryPrice:
+          type: number
+        currentPrice:
+          type: number
+          nullable: true
+        shares:
+          type: number
+        entryDate:
+          type: string
+          nullable: true
+        exitDate:
+          type: string
+          nullable: true
+        exitPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+          enum: [holding, sold, watching]
+        entryReason:
+          type: string
+          nullable: true
+        holdingReason:
+          type: string
+          nullable: true
+        sellReason:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        unrealisedPnl:
+          type: number
+          nullable: true
+        unrealisedPnlPercent:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - ticker
+        - companyName
+        - entryPrice
+        - shares
+        - status
+        - createdAt
+        - updatedAt
+
+    CreatePortfolioItem:
+      type: object
+      properties:
+        ticker:
+          type: string
+        companyName:
+          type: string
+        entryPrice:
+          type: number
+        currentPrice:
+          type: number
+          nullable: true
+        shares:
+          type: number
+        entryDate:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [holding, sold, watching]
+        entryReason:
+          type: string
+          nullable: true
+        holdingReason:
+          type: string
+          nullable: true
+        sellReason:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [ticker, companyName, entryPrice, shares, status]
+
+    UpdatePortfolioItem:
+      type: object
+      properties:
+        ticker:
+          type: string
+        companyName:
+          type: string
+        entryPrice:
+          type: number
+        currentPrice:
+          type: number
+          nullable: true
+        shares:
+          type: number
+        entryDate:
+          type: string
+          nullable: true
+        exitDate:
+          type: string
+          nullable: true
+        exitPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+          enum: [holding, sold, watching]
+        entryReason:
+          type: string
+          nullable: true
+        holdingReason:
+          type: string
+          nullable: true
+        sellReason:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    PortfolioSummary:
+      type: object
+      properties:
+        totalValue:
+          type: number
+        totalCost:
+          type: number
+        totalUnrealisedPnl:
+          type: number
+        totalUnrealisedPnlPercent:
+          type: number
+        holdingCount:
+          type: integer
+        bestPerformer:
+          type: string
+          nullable: true
+        worstPerformer:
+          type: string
+          nullable: true
+      required:
+        - totalValue
+        - totalCost
+        - totalUnrealisedPnl
+        - totalUnrealisedPnlPercent
+        - holdingCount
+
+    WatchlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        companyName:
+          type: string
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        addedDate:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        targetPrice:
+          type: number
+          nullable: true
+        currentPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - ticker
+        - companyName
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateWatchlistItem:
+      type: object
+      properties:
+        ticker:
+          type: string
+        companyName:
+          type: string
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        targetPrice:
+          type: number
+          nullable: true
+        currentPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required: [ticker, companyName, status]
+
+    UpdateWatchlistItem:
+      type: object
+      properties:
+        ticker:
+          type: string
+        companyName:
+          type: string
+        sector:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        targetPrice:
+          type: number
+          nullable: true
+        currentPrice:
+          type: number
+          nullable: true
+        status:
+          type: string
+        notes:
+          type: string
+          nullable: true

@@ -1,0 +1,315 @@
+Build me a full-stack web application called "APEX INVESTOR" — a comprehensive personal investment learning, tracking, analysis, and implementation platform. This is my life's investing companion app. It must be beautifully designed, blazing fast, fully structured, and dead simple to navigate despite its depth.
+
+## TECH STACK
+
+- Frontend: Next.js 14 (App Router) with TypeScript
+- Styling: Tailwind CSS + shadcn/ui component library
+- Database: SQLite via Prisma ORM (local-first, no external DB needed)
+- State: Zustand for global state
+- Storage: All data persists locally in SQLite database file
+- Search: Built-in full-text search across all sections
+- Export: JSON export/import for backup
+- No authentication needed — this is a personal single-user app
+
+## DESIGN & UI REQUIREMENTS
+
+- Dark mode by default (with light mode toggle)
+- Color scheme: Deep navy/charcoal background, gold/amber accents for S-tier highlights, green for profits, red for losses
+- Left sidebar navigation with collapsible category groups and icons for every section
+- Each section opens in the main content area (no page reloads, smooth transitions)
+- Every section has: a title header, description subtitle, an "Add Entry" button, and entries displayed as expandable cards
+- Cards should show preview text, date created, tags, and expand on click to show full content
+- Rich text editor (use Tiptap) for all text entry fields so I can format notes with bold, italic, bullet points, headers, highlights
+- Global search bar at the top that searches across ALL sections
+- "Quick Add" floating button (bottom-right) that lets me pick any section and add an entry from anywhere
+- Dashboard home page showing: total entries count per section, recent activity feed, pinned/starred items, and a motivational investing quote
+- Responsive design but optimized for desktop use
+- Smooth animations (framer-motion) for card expansions, page transitions, sidebar toggle
+- Every entry everywhere should have: created date, last modified date, tags (custom), star/pin toggle, archive toggle
+- Drag and drop reordering within sections
+
+## DATABASE SCHEMA
+
+Design the Prisma schema to support all sections below. Use a flexible but structured approach:
+
+- A `Section` model (id, name, slug, category, icon, description, sortOrder)
+- An `Entry` model (id, sectionId, title, content (rich text JSON), tags[], starred, archived, metadata (JSON field for section-specific structured data), createdAt, updatedAt)
+- A `Tag` model (id, name, color)
+- A `Portfolio` model (id, ticker, companyName, entryPrice, currentPrice, shares, entryDate, exitDate, exitPrice, status (holding/sold/watching), entryReason, holdingReason, sellReason, returns, notes, sector, country)
+- A `StockWatchlist` model (id, ticker, companyName, sector, country, addedDate, reason, targetPrice, currentPrice, status, notes)
+- A `QuarterlyAnalysis` model (id, quarter, year, ticker, companyName, analysis, experience, keyMetrics JSON, createdAt)
+- A `CompanyAnalysis` model (id, ticker, companyName, advantages, disadvantages, secretActivities, corrections, recommendations JSON array, sector, country, updatedAt)
+- A `MarketAnalysis` model (id, title, marketCondition, economyCorrelation, analysis, date, indicators JSON)
+
+## ALL SECTIONS TO BUILD (This is the core — build every single one)
+
+### CATEGORY 1: KNOWLEDGE BASE
+
+**1. S-Tier Investment Niches by Country**
+- Fields: Country (dropdown + custom), Niche/Sector, Why it's S-tier, Key companies, Market size, Growth potential, Personal notes, Sources/links
+- Display as cards grouped by country with country flags
+- Filter by country, sort by date added
+
+**2. S-Tier Principles**
+- Fields: Principle title, Full explanation, Source (book/person/experience), Category (risk management, valuation, psychology, etc.), Personal interpretation, How I apply it, Examples
+- Each principle gets a prominent display card
+- "Mark as Mastered" toggle
+
+**3. S-Tier Mindset**
+- Fields: Mindset concept, Description, Why it matters, How to practice it, Related principles, Personal reflections
+- Visual distinction for mindset entries (different card style, maybe with an icon)
+
+**4. S-Tier Rules**
+- Fields: Rule number (auto-increment), Rule title, Full rule description, Reasoning, Exceptions, Times this rule saved me, Times I broke this rule and what happened
+- Display as numbered list with expandable details
+- Violation tracker (log when you broke a rule and the outcome)
+
+**5. S-Tier Realisations**
+- Fields: Realisation title, The realisation (full text), What triggered it, Date of realisation, Impact on my investing, Category
+- Timeline view option
+
+**6. S-Tier Noticed Stuff**
+- Fields: What I noticed, Where (market/company/sector/economy), Date noticed, Why it matters, Follow-up action, Was I right? (update later), Outcome
+- Quick-add optimized (should be fastest to add entries to)
+
+**7. S-Tier Reality Things (What Really Happens)**
+- Fields: Title, The reality, The common misconception, Evidence/examples, How to use this knowledge, Source
+
+**8. S-Tier Success Stories in Practice**
+- Fields: Story title, Company/trade involved, What I did, Why I did it, Entry details, Exit details, Profit/return, Timeline, Key lessons, What I'd do differently, Screenshot/chart description
+- Highlight profit prominently in green
+
+**9. S-Tier Lessons from Failing**
+- Fields: Failure title, What happened, What went wrong, Root cause analysis, Financial impact, Emotional impact, Lesson learned, How I prevent this now, Date
+- Display financial impact in red
+- "Lesson Applied" checkbox
+
+**10. S-Tier Summaries**
+- Fields: Summary title, Source (book/video/article/podcast), Key takeaways (bullet points), How it applies to my investing, Rating (1-5 stars), Category, Link to source
+- Filter by source type and rating
+
+**11. S-Tier Prompts**
+- Fields: Prompt title, The prompt text, What it's for, Category (analysis/research/brainstorming/etc.), Example output, Notes
+- One-click copy button for each prompt
+
+**12. S-Tier Investors — Adopting Learnings**
+- Fields: Investor name, Their philosophy, Key strategies, What I've adopted from them, Books/resources, Notable quotes, Their best trades, How they think differently
+- Profile-card style display with investor name prominent
+
+### CATEGORY 2: OPPORTUNITIES & ANALYSIS
+
+**13. S-Tier Investment Opportunities**
+- Fields: Opportunity title, Type (stock/sector/macro/thematic), Description, Thesis, Risk level (1-5), Time horizon, Potential return, Entry strategy, Current status (researching/ready/entered/passed), Related companies, Notes
+- Kanban board view (Researching → Ready → Entered → Passed)
+
+**14. S-Tier Precedence of Filters for Investing**
+- Fields: Filter level (1 being first applied), Filter name, Filter criteria, Why this order, What it eliminates, Examples of stocks that pass/fail
+- Display as a visual funnel/pyramid
+- Numbered waterfall list showing filter order
+
+**15. S-Tier Market Analysis & Economy Correlation**
+- Fields: Analysis date, Market overview, Economic indicators (GDP, inflation, rates, unemployment), Market sentiment, Sector rotation observations, Correlation analysis, Predictions, Confidence level, Follow-up (was I right?)
+- Dashboard-style display with key metrics highlighted
+
+**16. S-Tier Why I Missed Opportunities**
+- Fields: Opportunity missed, What it was, When I noticed it, Why I didn't act, What the return would have been, Root cause (fear/analysis-paralysis/ignorance/etc.), How to prevent next time
+- Calculate "cost of inaction" prominently displayed
+
+**17. S-Tier What Really Works**
+- Fields: Strategy/approach, Description, Evidence (my trades), Win rate, Average return, When it works best, When it fails, Confidence level
+- Sort by win rate and return
+
+**18. S-Tier Investing Ideas**
+- Fields: Idea title, The idea, Thesis, Catalyst, Timeline, Risk, Potential, Status (idea/researching/validated/invalidated), Related entries
+- Quick capture focused
+
+### CATEGORY 3: STOCK-SPECIFIC
+
+**19. S-Tier Stock Watchlist**
+- Uses StockWatchlist model
+- Table view with sortable columns: Ticker, Company, Sector, Country, Target Price, Date Added, Status, Reason
+- Card view toggle
+- Status: Watching / Ready to Buy / Bought / Removed
+- Filter by sector, country, status
+
+**20. S-Tier Favourites — Not Buying (with reasons)**
+- Fields: Ticker, Company name, Why I love it, Why I'm NOT buying, What would change my mind, Current valuation concern, Sector, Date added
+- Visual "love but can't have" styling
+
+**21. Company Advantages Analysis**
+- Uses CompanyAnalysis model — advantages section
+- Fields: Company, Their competitive advantages, Why they're ahead, Moat description, Evidence, Comparison to competitors
+- Side-by-side comparison feature for 2 companies
+
+**22. Company Disadvantages & Corrections**
+- Uses CompanyAnalysis model — disadvantages section
+- Fields: Company, Disadvantages identified, What should be corrected, Impact if not corrected, Is management aware, Timeline for correction
+- Red/warning styling
+
+**23. Company Secret Activities Analysis**
+- Uses CompanyAnalysis model — secretActivities section
+- Fields: Company, Activity noticed, Source of information, Potential impact (positive/negative), Confidence level, Date noticed, Follow-up
+- "Confidential" visual styling (subtle, maybe with a lock icon)
+
+**24. Sector Disadvantages List**
+- Fields: Sector name, Disadvantage, Impact level, Is it cyclical or structural, Affected companies, Hedging strategy, Notes
+- Group by sector
+
+**25. Recommendations by Others**
+- Fields: Recommender name, Their profession/expertise, Company recommended, Why they believe in it, Group consensus (if applicable), My analysis of their recommendation, Date, Follow-up, Was it good advice?
+- Trust rating for recommenders over time
+
+**26. Quarterly Analysis Journal**
+- Uses QuarterlyAnalysis model
+- Fields: Quarter (Q1-Q4), Year, Company (optional — can be market-wide), Key metrics, Earnings analysis, Surprises, My takeaways, Experience notes, Forward outlook
+- Calendar/timeline navigation by quarter
+
+### CATEGORY 4: INVESTING STYLES LEARNING
+
+**27. Value Investing**
+- Fields: Concept/lesson title, Content, Key metrics to watch, Application examples, Book/source, Mastery level
+- Dedicated sub-page with its own entries
+
+**28. Growth Investing**
+- Same field structure as Value Investing
+- Separate section with growth-focused styling (upward arrow motifs)
+
+**29. Quality Investing**
+- Same field structure
+- Focus on quality metrics, moats, management quality
+
+**30. Macro Investing**
+- Same field structure
+- Additional fields: Economic indicator, Global/regional scope, Correlation to markets
+
+**31. Catalyst-Driven Investing**
+- Same field structure
+- Additional fields: Catalyst type, Expected timeline, Binary outcome (yes/no)
+
+### CATEGORY 5: WORST CASES & ANTI-PATTERNS
+
+**32. Worst Investments / Cases to Remember**
+- Fields: Company/trade, What happened, Warning signs I missed, Total loss, Timeline of decline, Key lesson, "Never Again" commitment, Category of mistake
+- Prominent red/warning visual design
+- "Review Required" reminder system (flag entries to re-read periodically)
+
+### CATEGORY 6: PERSONAL SYSTEM
+
+**33. My Protocols**
+- Fields: Protocol name, When to apply, Step-by-step procedure, Checklist items (interactive checkboxes), Exceptions, Last reviewed date
+- Checklist format with checkable items
+
+**34. My Rules**
+- Fields: Rule number, Rule, Explanation, Non-negotiable (yes/no), Date established, Times tested, Outcome
+- Separate from S-Tier Rules — these are MY personal rules
+- Non-negotiable rules highlighted with gold border
+
+**35. My Strategy**
+- Fields: Strategy name, Description, Entry criteria, Exit criteria, Position sizing, Risk management, Time horizon, Track record
+- Strategy builder with structured sections
+
+**36. Paper Trading Portfolio**
+- Uses Portfolio model
+- Full portfolio tracker: Ticker, Company, Entry Price, Current Price, Shares, Entry Date, Entry Reason, Current Reason for Holding, Reason to Sell, Unrealised P&L (auto-calculated from entry and current price), Status
+- Portfolio summary: Total value, Total return, Best performer, Worst performer
+- Yearly returns table (manual entry per year)
+- Edit current price to update returns
+- Visual P&L with green/red coloring
+
+**37. Investing Notes (General)**
+- Free-form notes section
+- Fields: Title, Content (rich text), Tags, Category
+- The catch-all for anything that doesn't fit elsewhere
+
+### CATEGORY 7: CUSTOM SECTIONS
+
+**38. Custom Niche Sections**
+- Allow me to CREATE new sections dynamically
+- I provide: Section name, Description, Category, Custom fields
+- The app generates a new section in the sidebar under a "Custom" category
+- Full CRUD on custom sections
+- This is critical — I need to add new learning niches as I discover them
+
+## ADDITIONAL FEATURES
+
+### Dashboard (Home Page)
+- Total entries across all sections (with mini sparkline of entries over time)
+- Recent 10 entries across all sections (activity feed)
+- Starred/Pinned items widget
+- Quick stats: Total watchlist stocks, Portfolio P&L, Entries this week/month
+- Random "Review This" — surfaces a random old entry to re-read
+- Section completion meter (which sections have the most content)
+
+### Global Features
+- **Full-text search** across all sections with section filter
+- **Tag system**: Create tags, assign colors, filter by tags across all sections  
+- **Star/Pin**: Any entry can be starred. Starred items appear on dashboard
+- **Archive**: Archive entries without deleting. Toggle to show archived
+- **Export**: Export all data as JSON. Import JSON backup
+- **Print view**: Clean print layout for any entry or section
+- **Keyboard shortcuts**: Ctrl+K for search, Ctrl+N for new entry, Ctrl+1-9 for sections
+- **Sidebar**: Collapsible, shows all categories with nested sections, entry counts per section, active section highlighted
+
+### Section Navigation
+- Sidebar organized by the 7 categories above
+- Each category is collapsible
+- Each section shows entry count badge
+- Click section → main area shows that section
+- Breadcrumb navigation at top
+
+## FILE STRUCTURE
+
+Use clean Next.js App Router structure:
+/app — pages and layouts
+/app/page.tsx — Dashboard
+/app/sections/[slug]/page.tsx — Dynamic section pages
+/components — all UI components
+/components/ui — shadcn components
+/components/layout — Sidebar, Header, QuickAdd
+/components/entries — EntryCard, EntryForm, EntryList
+/components/portfolio — PortfolioTable, PortfolioSummary
+/components/dashboard — DashboardWidgets
+/lib — utilities, database helpers
+/lib/db.ts — Prisma client
+/lib/actions.ts — Server actions for CRUD
+/prisma — schema and migrations
+
+## IMPLEMENTATION INSTRUCTIONS
+
+1. Initialize the Next.js project with TypeScript and Tailwind
+2. Set up Prisma with SQLite
+3. Install and configure shadcn/ui (install these components: button, card, dialog, dropdown-menu, input, label, select, textarea, badge, tabs, separator, sheet, command, popover, calendar, checkbox, toggle, tooltip, scroll-area, accordion)
+4. Build the layout first (sidebar + header + main content area)
+5. Build the dashboard
+6. Build the dynamic section system that renders based on section slug
+7. Build the entry CRUD system (create, read, update, delete with rich text)
+8. Build each specialized section (Portfolio, Watchlist, Company Analysis, etc.)
+9. Build the search system
+10. Build the tag system
+11. Build export/import
+12. Build the Quick Add feature
+13. Add keyboard shortcuts
+14. Add animations with framer-motion
+15. Seed the database with all 38 sections pre-created (with names, descriptions, icons, categories)
+
+## SEED DATA
+
+Pre-populate the Section table with all 38 sections listed above, with appropriate:
+- Names (as listed)
+- Slugs (kebab-case)
+- Categories (Knowledge Base, Opportunities & Analysis, Stock-Specific, Investing Styles, Worst Cases, Personal System, Custom)
+- Icons (use Lucide icon names)
+- Descriptions (one-line description of what goes in each section)
+
+## CRITICAL REQUIREMENTS
+
+- The app MUST work fully offline after initial load
+- All data stored in local SQLite — no external API calls needed
+- The app must be FAST — no unnecessary re-renders
+- The UI must feel premium — consistent spacing, typography, colors
+- Every section must be functional with full CRUD from day one
+- The rich text editor must support: headings, bold, italic, underline, bullet lists, numbered lists, highlights, code blocks, links
+- No section should feel like an afterthought — each one gets proper UI treatment
+- The sidebar must never feel cluttered despite 38+ sections — use collapsible categories
+
+Build this entire application now. Start with the foundation (project setup, database, layout) and build out every section systematically. This is a production-quality personal tool I will use daily for years.

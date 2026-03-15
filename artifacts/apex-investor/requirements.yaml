@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For fluid card transitions, layout animations, and glassmorphic UI reveals"
+  "@tiptap/react": "Core React bindings for the rich text editor required for investment notes"
+  "@tiptap/starter-kit": "Standard extensions for Tiptap editor"
+  "@tiptap/extension-placeholder": "Placeholder text extension for Tiptap"
+  "recharts": "For rendering portfolio performance charts and allocation distributions"
+  "date-fns": "For formatting entry timestamps and portfolio dates"
+  "clsx": "Utility for constructing CSS class names conditionally"
+  "tailwind-merge": "Utility for merging Tailwind CSS classes without style conflicts"
+
+images:
+  - path: "artifacts/apex-investor/public/images/hero-bg.png"
+    description: "Abstract luxurious dark navy and charcoal gradient mesh background with subtle glowing gold and amber light leaks, elegant and professional, premium financial aesthetic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/apex-investor/public/images/empty-state.png"
+    description: "Minimalist abstract 3D geometric shapes in dark navy and gold, floating softly, suitable for an empty state illustration in a premium finance app"
+    aspect_ratio: "1:1"
+
+notes:
+  - Assumes backend is running and generated API hooks are available at @workspace/api-client-react
+  - Defaulting to dark mode globally to match the premium dark/gold aesthetic
