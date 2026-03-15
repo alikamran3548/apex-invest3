@@ -1,7 +1,5 @@
 {
   "engines": { "node": "20.x", "pnpm": ">=9" },
-  "engines": { "node": "20.x", "pnpm": ">=9" },
-  "engines": { "node": "20.x", "pnpm": ">=9" },
   "name": "workspace",
   "version": "1.0.0",
   "license": "MIT",
