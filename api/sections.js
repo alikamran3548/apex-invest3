@@ -3,7 +3,6 @@ let sections = [
   { id: 2, name: "ETFs", description: "Exchange-traded funds" },
   { id: 3, name: "Crypto", description: "Cryptocurrency investments" }
 ];
-
 export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method === "GET") return res.status(200).json(sections);

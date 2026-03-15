@@ -3,7 +3,6 @@ let tags = [
   { id: 2, name: "growth", color: "#10b981" },
   { id: 3, name: "dividend", color: "#f59e0b" }
 ];
-
 export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method === "GET") return res.status(200).json(tags);
