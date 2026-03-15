@@ -1,12 +1,11 @@
 {
-  "engines": { "node": "20.x", "pnpm": ">=9" },
   "name": "workspace",
   "version": "1.0.0",
   "license": "MIT",
   "engines": {
-  "node": "20.x",
-  "pnpm": "9.x"
-}
+    "node": "20.x",
+    "pnpm": ">=9"
+  },
   "scripts": {
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
