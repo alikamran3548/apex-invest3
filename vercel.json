@@ -1,20 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "artifacts/apex-investor/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "installCommand": "npm install -g pnpm && pnpm install",
+  "buildCommand": "cd artifacts/apex-investor && pnpm install && pnpm run build",
+  "outputDirectory": "artifacts/apex-investor/dist",
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/artifacts/apex-investor/$1" }
+    { "src": "/(.*)", "destination": "/index.html" }
   ]
 }
